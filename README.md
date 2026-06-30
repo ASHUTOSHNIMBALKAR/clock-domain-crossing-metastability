@@ -25,7 +25,7 @@ graph LR
     subgraph "Clock Domain 2 (Clk_2)"
         B["DESTINATION/RECEIVER LOGIC"]
     end
-    A -->|Data_out (Async)| B
+    A -->|async_data| B
     classDef domain1 fill:#1a73e8,stroke:#0d47a1,stroke-width:2px,color:#fff;
     classDef domain2 fill:#34a853,stroke:#1b5e20,stroke-width:2px,color:#fff;
     class A domain1;
@@ -48,7 +48,7 @@ graph LR
         end
         B2 --> C["Downstream Logic"]
     end
-    A -->|Data_out (Async)| B1
+    A -->|async_data| B1
     classDef domain1 fill:#1a73e8,stroke:#0d47a1,stroke-width:2px,color:#fff;
     classDef sync fill:#ea4335,stroke:#b71c1c,stroke-width:2px,color:#fff;
     classDef domain2 fill:#34a853,stroke:#1b5e20,stroke-width:2px,color:#fff;
