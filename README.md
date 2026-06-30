@@ -215,7 +215,7 @@ Waveforms dumped:
 The following timing diagram represents the GTKWave simulation traces. It illustrates the exact difference between direct sampling (unsafe) and 2-stage FF synchronization (safe) when the asynchronous input changes near clock edges.
 
 ```text
-Time (ns)       0      10     20     30     40     50     60     70
+Time (ps)       0      10     20     30     40     50     60     70     80
                 ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐
 clk             │  │   │  │   │  │   │  │   │  │   │  │   │  │   │  │
              ───┘  └───┘  └───┘  └───┘  └───┘  └───┘  └───┘  └───┘  └───
@@ -225,7 +225,7 @@ async_in               │      │      │                         │
                        ^             ^             ^
                        │             │             │
                    Safe Case    Setup Viol.   Setup Viol.
-                                (at 29.9ns)   (at 50.0ns)
+                   (at 12ps)    (at 25ps)     (at 34ps)
                        ┌──────┐      ┌─────────────────────────┐
 sampled (Unsafe)       │      │      │                         │
              ──────────┘      └──────┘                         └───────
@@ -236,7 +236,7 @@ sampled (Unsafe)       │      │      │                         │
 sync_reg_1                           │                         │
 (Safe Stage 1) ──────────────────────┘                         └───────
                                      (Samples unstable level; resolves
-                                      to a stable state by 40ns)
+                                      to a stable state by 35ps)
                                             ┌──────────────────┐
 sync_reg_2                                  │                  │
 (Safe Stage 2) ─────────────────────────────┘                  └───────
@@ -247,14 +247,14 @@ sync_reg_2                                  │                  │
 
 ### Unsynchronized CDC Waveform (`metastability_unsafe.vcd`)
 In the unsafe design, `async_in` transitions right on the clock edge:
-* At `29.9ns`, `async_in` rises just `0.1ns` before the clock edge at `30.0ns`.
-* In physical hardware, this violates setup/hold times causing `sampled` to oscillate or settle arbitrarily, manifesting as logic glitches in subsequent hardware stages.
-* In logical simulation, the output transitions immediately but represents an uncoordinated crossing.
+* At `12ps`, `async_in` rises. This is a safe crossing since it's far from the rising edges of `clk` (at `5ps` and `15ps`).
+* At `25ps`, `async_in` rises exactly on the rising edge of `clk` (at `25ps`). In physical hardware, this violates setup/hold times causing `sampled` to oscillate or settle arbitrarily, manifesting as logic glitches in subsequent hardware stages.
+* At `34ps`, `async_in` falls just `1ps` before the clock edge at `35ps`. This is also a timing violation.
 
 ### Synchronized CDC Waveform (`metastability_safe.vcd`)
 Using the 2FF synchronizer:
-* `sync_reg_1` captures the unstable value and goes metastable.
-* By the next clock edge (`40.0ns`), `sync_reg_1` has resolved to a stable state.
+* `sync_reg_1` captures the unstable value on the clock edge and goes metastable.
+* By the next clock edge (`35ps`), `sync_reg_1` has resolved to a stable state.
 * `sync_reg_2` samples the resolved value, ensuring a clean, glitch-free, synchronized output is sent to downstream logic.
 
 ---
