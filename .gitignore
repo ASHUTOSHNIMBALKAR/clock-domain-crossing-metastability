@@ -1,0 +1,27 @@
+# Icarus Verilog outputs
+*.vvp
+*.out
+*.vcd
+
+# Verilator outputs
+obj_dir/
+*.mk
+*.d
+
+# ModelSim / QuestaSim outputs
+work/
+transcript
+vsim.wlf
+
+# Xilinx Vivado outputs
+.Xil/
+*.log
+*.jou
+*.pb
+*.str
+*.dir
+
+# OS and system files
+.DS_Store
+Thumbs.db
+desktop.ini
