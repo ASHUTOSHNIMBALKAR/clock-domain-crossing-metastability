@@ -209,8 +209,6 @@ Waveforms dumped:
 
 ## 📊 Simulation Analysis & Waveforms
 
-![GTKWave Simulation Waveforms](docs/images/metastability_waveform.png)
-
 ### 📈 ASCII Waveform Timing Analysis
 The following timing diagram represents the GTKWave simulation traces. It illustrates the exact difference between direct sampling (unsafe) and 2-stage FF synchronization (safe) when the asynchronous input changes near clock edges.
 
@@ -246,6 +244,9 @@ sync_reg_2                                  │                  │
 
 
 ### Unsynchronized CDC Waveform (`metastability_unsafe.vcd`)
+
+![GTKWave Unsynchronized Simulation Waveform](docs/images/metastability_waveform.png)
+
 In the unsafe design, `async_in` transitions right on the clock edge:
 * At `12ps`, `async_in` rises. This is a safe crossing since it's far from the rising edges of `clk` (at `5ps` and `15ps`).
 * At `25ps`, `async_in` rises exactly on the rising edge of `clk` (at `25ps`). In physical hardware, this violates setup/hold times causing `sampled` to oscillate or settle arbitrarily, manifesting as logic glitches in subsequent hardware stages.
