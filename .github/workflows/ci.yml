@@ -1,0 +1,30 @@
+name: HDL CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  compile-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Install Icarus Verilog
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y iverilog
+
+    - name: Compile and Simulate Unsafe Design
+      run: |
+        iverilog -o sim_unsafe.vvp rtl/metastability_unsafe.v tb/tb_metastability_unsafe.v
+        vvp sim_unsafe.vvp
+
+    - name: Compile and Simulate Safe Design
+      run: |
+        iverilog -o sim_safe.vvp rtl/metastability_safe.v tb/tb_metastability_safe.v
+        vvp sim_safe.vvp
