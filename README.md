@@ -245,7 +245,7 @@ sync_reg_2                                  │                  │
 
 ### Unsynchronized CDC Waveform (`metastability_unsafe.vcd`)
 
-![GTKWave Unsynchronized Simulation Waveform](docs/images/metastability_waveform.png)
+![GTKWave Unsynchronized Simulation Waveform]([docs/images/metastability_waveform.png](https://github.com/ASHUTOSHNIMBALKAR/clock-domain-crossing-metastability/blob/main/docs/images/metastability_block_diagram.png))
 
 In the unsafe design, `async_in` transitions right on the clock edge:
 * At `12ps`, `async_in` rises. This is a safe crossing since it's far from the rising edges of `clk` (at `5ps` and `15ps`).
