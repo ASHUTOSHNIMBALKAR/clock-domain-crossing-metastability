@@ -211,6 +211,40 @@ Waveforms dumped:
 
 ![GTKWave Simulation Waveforms](docs/images/metastability_waveform.png)
 
+### 📈 ASCII Waveform Timing Analysis
+The following timing diagram represents the GTKWave simulation traces. It illustrates the exact difference between direct sampling (unsafe) and 2-stage FF synchronization (safe) when the asynchronous input changes near clock edges.
+
+```text
+Time (ns)       0      10     20     30     40     50     60     70
+                ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐   ┌──┐
+clk             │  │   │  │   │  │   │  │   │  │   │  │   │  │   │  │
+             ───┘  └───┘  └───┘  └───┘  └───┘  └───┘  └───┘  └───┘  └───
+                       ┌──────┐      ┌─────────────────────────┐
+async_in               │      │      │                         │
+             ──────────┘      └──────┘                         └───────
+                       ^             ^             ^
+                       │             │             │
+                   Safe Case    Setup Viol.   Setup Viol.
+                                (at 29.9ns)   (at 50.0ns)
+                       ┌──────┐      ┌─────────────────────────┐
+sampled (Unsafe)       │      │      │                         │
+             ──────────┘      └──────┘                         └───────
+                                     (Outputs transition on violating
+                                      edges, risking metastability)
+                                     
+                                     ┌─────────────────────────┐
+sync_reg_1                           │                         │
+(Safe Stage 1) ──────────────────────┘                         └───────
+                                     (Samples unstable level; resolves
+                                      to a stable state by 40ns)
+                                            ┌──────────────────┐
+sync_reg_2                                  │                  │
+(Safe Stage 2) ─────────────────────────────┘                  └───────
+                                            (Clean, synchronized stable 
+                                             output delayed by 1 cycle)
+```
+
+
 ### Unsynchronized CDC Waveform (`metastability_unsafe.vcd`)
 In the unsafe design, `async_in` transitions right on the clock edge:
 * At `29.9ns`, `async_in` rises just `0.1ns` before the clock edge at `30.0ns`.
